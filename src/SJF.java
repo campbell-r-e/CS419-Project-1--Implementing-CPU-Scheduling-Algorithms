@@ -7,7 +7,7 @@ import java.util.*;
 
 public class SJF extends Algorithm {
 
-    private final List readyQueue = new LinkedList<>();
+    private final List readyQueue = new ArrayList<>();
 
     private final Queue<Process> processesToArrive;
 
@@ -34,7 +34,7 @@ public class SJF extends Algorithm {
 
             Collections.sort(readyQueue);
 
-            Process currentProcess = readyQueue.remove();
+            Process currentProcess = (Process) readyQueue.remove(0);
 
             int runTime = currentProcess.getBurstTime();
 
