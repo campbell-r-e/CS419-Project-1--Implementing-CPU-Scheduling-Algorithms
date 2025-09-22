@@ -7,7 +7,7 @@ import java.util.*;
 
 public class SJF extends Algorithm {
 
-    private final List readyQueue = new ArrayList<>();
+    private final List<Process> readyProcesses = new ArrayList<>();
 
     private final Queue<Process> processesToArrive;
 
@@ -22,19 +22,28 @@ public class SJF extends Algorithm {
     public void schedule() {
         System.out.println("Shortest Job First");
 
-        while (!readyQueue.isEmpty() || !processesToArrive.isEmpty()) {
-            if (readyQueue.isEmpty()) {
+        while (!readyProcesses.isEmpty() || !processesToArrive.isEmpty()) {
+            if (readyProcesses.isEmpty()) {
                 Process process = processesToArrive.remove();
                 if (now < process.getArrivalTime()) {
                     //advance the simulation clock to the next process's arrival time
                     now = process.getArrivalTime();
                 }
-                readyQueue.add(process);
+                readyProcesses.add(process);
             }
 
-            Collections.sort(readyQueue);
+            int smallest = -1;
+            int smallestValue = Integer.MAX_VALUE;
 
-            Process currentProcess = (Process) readyQueue.remove(0);
+            for(int i = 0; i < readyProcesses.size(); i ++){
+                int burst = readyProcesses.get(i).getBurstTime();
+                if(burst < smallestValue){
+                    smallestValue = burst;
+                    smallest = i;
+                }
+            }
+
+            Process currentProcess = readyProcesses.remove(smallest);
 
             int runTime = currentProcess.getBurstTime();
 
@@ -48,7 +57,7 @@ public class SJF extends Algorithm {
 
             while(!processesToArrive.isEmpty() &&
                     processesToArrive.peek().getArrivalTime()<=now) {
-                readyQueue.add(processesToArrive.remove());
+                readyProcesses.add(processesToArrive.remove());
             }
         }
 
