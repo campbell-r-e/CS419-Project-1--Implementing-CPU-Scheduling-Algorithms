@@ -46,15 +46,31 @@ public class SRTF extends Algorithm{
 
             Process currentProcess = readyProcesses.remove(smallest);
 
-            int runTime = currentProcess.getBurstTime();
+            int runTime;
 
-            System.out.print("At time " + now + ": ");
-            CPU.run(currentProcess, runTime);
+            if(processesToArrive.isEmpty()){
+                runTime = currentProcess.getRemainingTime();
+
+                System.out.print("At time " + now + ": ");
+                CPU.run(currentProcess, runTime);
+            } else{
+                Process nextProcess = processesToArrive.peek();
+
+                runTime = Math.min(currentProcess.getRemainingTime(), nextProcess.getArrivalTime() - now);
+
+                System.out.print("At time " + now + ": ");
+                CPU.run(currentProcess, runTime);
+            }
 
             now += runTime;
 
-            currentProcess.setRemainingTime(0);
-            currentProcess.setFinishTime(now);
+            currentProcess.setRemainingTime(currentProcess.getRemainingTime() - runTime);
+            if (currentProcess.getRemainingTime() == 0) {
+                currentProcess.setFinishTime(now);
+            }else {
+
+                readyProcesses.add(currentProcess);
+            }
 
             while(!processesToArrive.isEmpty() &&
                     processesToArrive.peek().getArrivalTime()<=now) {
