@@ -49,6 +49,12 @@ public class RR extends Algorithm{
             // Advance the simulation clock
             now += runTime;
 
+            // If any processes have arrived by 'now', add them to ready queue
+            while(!processesToArrive.isEmpty() &&
+                    processesToArrive.peek().getArrivalTime()<=now){
+                readyQueue.add(processesToArrive.remove());
+            }
+
             // Mark this process as completed
             currentProcess.setRemainingTime(currentProcess.getRemainingTime() - runTime);
 
@@ -60,18 +66,7 @@ public class RR extends Algorithm{
             }
 
 
-            // If any processes have arrived by 'now', add them to ready queue
-            while(!processesToArrive.isEmpty() &&
-                    processesToArrive.peek().getArrivalTime()<=now){
-                readyQueue.add(processesToArrive.remove());
-            }
+
         }
-
-
-
-
-
-
-
     }
 }
